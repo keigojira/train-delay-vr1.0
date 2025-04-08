@@ -98,3 +98,46 @@ async def on_ready():
     else:
         print("❌ チャンネルが見つかりませんでした。CHANNEL_IDを確認してください。")
 
+import discord
+import requests
+from bs4 import BeautifulSoup
+
+intents = discord.Intents.default()
+intents.message_content = True  # メッセージ内容にアクセスするためのインテントを有効にする
+
+client = discord.Client(intents=intents)
+
+# 遅延情報を取得する関数
+def get_delay_info():
+    # 実際の遅延情報のページにアクセスする（仮にURLを設定しています）
+    url = "https://example.com/delay-info"  # 実際の遅延情報のURLに変更してください
+    response = requests.get(url)
+    soup = BeautifulSoup(response.text, 'html.parser')
+
+    # 適切なHTML要素を検索し、遅延情報を取得（仮の要素として「.delay-status」を指定）
+    delay_info = soup.find(class_="delay-status")  # 適切なクラス名を使用してください
+
+    if delay_info:
+        return delay_info.text.strip()
+    else:
+        return "遅延情報が見つかりませんでした。"
+
+@client.event
+async def on_ready():
+    print(f'We have logged in as {client.user}')
+
+@client.event
+async def on_message(message):
+    if message.author == client.user:
+        return  # ボット自身のメッセージには反応しない
+
+    if message.content.startswith('!hello'):
+        await message.channel.send('Hello!')  # メッセージに反応して送信
+
+    elif message.content.startswith('!delay'):
+        delay_info = get_delay_info()  # 遅延情報を取得
+        await message.channel.send(f"現在の遅延情報: {delay_info}")  # 遅延情報を送信
+
+client.run('YOUR_BOT_TOKEN')  # ボットのトークンをここに設定
+
+
