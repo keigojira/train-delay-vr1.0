@@ -91,11 +91,10 @@ client.run(TOKEN)
 
 @client.event
 async def on_ready():
-    print(f"✅ Bot起動成功: {client.user}")
-    
-    # テスト送信：指定チャンネルにメッセージ送ってみる
+    print(f"✅ Botが起動しました！ユーザー: {client.user}")  # ログに起動を表示
     channel = client.get_channel(int(CHANNEL_ID))
     if channel:
         await channel.send("🚅 テストメッセージ：Botは正常に動作しています！")
     else:
-        print("⚠️ チャンネルが見つかりません！CHANNEL_IDを確認してね")
+        print("❌ チャンネルが見つかりませんでした。CHANNEL_IDを確認してください。")
+
